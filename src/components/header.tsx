@@ -3,13 +3,17 @@ import { Feather } from "@expo/vector-icons";
 import colors from "tailwindcss/colors";
 
 import LogoImg from "@/assets/logo.png";
+import useCartStore from "@/stores/cart-store";
 
 type Props = {
   title: string;
-  cartQuantity?: number;
 };
 
-export function Header({ title, cartQuantity = 0 }: Props) {
+export function Header({ title }: Props) {
+  const { countAllProduts } = useCartStore();
+
+  const cartQuantity = countAllProduts();
+
   return (
     <View className="flex-row items-center border-b border-slate-700 pb-5 mx-5 mt-8">
       <View className="flex-1">
