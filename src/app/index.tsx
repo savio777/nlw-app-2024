@@ -1,3 +1,4 @@
+import { useRef, useCallback, useState } from "react";
 import {
   FlatList,
   View,
@@ -8,7 +9,6 @@ import {
   Text,
   SectionListData,
 } from "react-native";
-import { useCallback, useState } from "react";
 
 import { CategoryButton } from "@/components/category-button";
 import { Header } from "@/components/header";
@@ -27,10 +27,24 @@ const styles = StyleSheet.create({
 });
 
 export default function Home() {
+  const refScrollVertical = useRef<SectionList>(null);
+
   const [categorySelected, setCategorySelected] = useState(CATEGORIES[0]);
 
   const handleChangeCategory = useCallback((item: string) => {
     setCategorySelected(item);
+
+    const sectionIndex = CATEGORIES.findIndex(
+      (categoryItem) => categoryItem === item
+    );
+
+    if (refScrollVertical?.current) {
+      refScrollVertical.current.scrollToLocation({
+        animated: true,
+        sectionIndex,
+        itemIndex: 0,
+      });
+    }
   }, []);
 
   const renderItemListHorizontal: ListRenderItem<string> = useCallback(
@@ -71,6 +85,7 @@ export default function Home() {
       />
 
       <SectionList
+        ref={refScrollVertical}
         className="flex-1 p-5"
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.id}
