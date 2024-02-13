@@ -1,5 +1,4 @@
 import { Slot } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native";
 import {
   Inter_400Regular,
@@ -25,8 +24,6 @@ export default function Layout() {
   return (
     <SafeAreaView className="flex-1 bg-slate-900">
       <Slot />
-
-      <StatusBar style="light" backgroundColor="#0F172A" />
     </SafeAreaView>
   );
 }

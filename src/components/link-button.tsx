@@ -1,0 +1,13 @@
+import { Link, LinkProps } from "expo-router";
+
+type Props = {
+  title: string;
+} & LinkProps<string>;
+
+export function LinkButton({ title, ...rest }: Props) {
+  return (
+    <Link className="text-slate-300 text-base text-center font-body" {...rest}>
+      {title}
+    </Link>
+  );
+}
