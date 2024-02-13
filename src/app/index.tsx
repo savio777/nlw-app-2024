@@ -1,10 +1,30 @@
-import { FlatList, View, ListRenderItem } from "react-native";
+import {
+  FlatList,
+  View,
+  ListRenderItem,
+  SectionList,
+  StyleSheet,
+  SectionListRenderItem,
+  Text,
+  SectionListData,
+} from "react-native";
+import { useCallback, useState } from "react";
 
 import { CategoryButton } from "@/components/category-button";
 import { Header } from "@/components/header";
 
-import { CATEGORIES } from "@/utils/data/products";
-import { useCallback, useState } from "react";
+import { CATEGORIES, MENU, ProductProps } from "@/utils/data/products";
+import { Product } from "@/components/product";
+
+const styles = StyleSheet.create({
+  flastListHorizontalContentContainerStyle: {
+    gap: 4,
+    paddingHorizontal: 20,
+  },
+  flastListVerticalContentContainerStyle: {
+    paddingBottom: 50,
+  },
+});
 
 export default function Home() {
   const [categorySelected, setCategorySelected] = useState(CATEGORIES[0]);
@@ -13,7 +33,7 @@ export default function Home() {
     setCategorySelected(item);
   }, []);
 
-  const renderItem: ListRenderItem<string> = useCallback(
+  const renderItemListHorizontal: ListRenderItem<string> = useCallback(
     ({ item }) => (
       <CategoryButton
         title={item}
@@ -24,18 +44,41 @@ export default function Home() {
     [categorySelected]
   );
 
+  const renderHeaderItemListVertical = useCallback(
+    ({ section }: { section: SectionListData<ProductProps> }) => (
+      <Text className="text-white text-xl font-heading mt-8 mb-3">
+        {section.title}
+      </Text>
+    ),
+    []
+  );
+
+  const renderItemListVertical: SectionListRenderItem<ProductProps> =
+    useCallback(({ item }) => <Product data={item} />, []);
+
   return (
     <View className="flex-1">
       <Header title="Faça seu pedido" />
 
       <FlatList
         className="max-h-10 mt-5"
-        contentContainerStyle={{ gap: 4, paddingHorizontal: 20 }}
         horizontal
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item}
         data={CATEGORIES}
-        renderItem={renderItem}
+        renderItem={renderItemListHorizontal}
+        contentContainerStyle={styles.flastListHorizontalContentContainerStyle}
+      />
+
+      <SectionList
+        className="flex-1 p-5"
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        sections={MENU}
+        stickySectionHeadersEnabled={false}
+        renderItem={renderItemListVertical}
+        renderSectionHeader={renderHeaderItemListVertical}
+        contentContainerStyle={styles.flastListVerticalContentContainerStyle}
       />
     </View>
   );
