@@ -13,6 +13,7 @@ type ICartStore = {
   remove: (product: ProductProps) => void;
   clean: () => void;
   countAllProduts: () => number;
+  totalValueProduts: () => number;
 };
 
 const useCartStore = create<ICartStore>((set, get) => ({
@@ -28,6 +29,18 @@ const useCartStore = create<ICartStore>((set, get) => ({
 
     if (products.length) {
       return products.reduce((total, product) => total + product.quantity, 0);
+    }
+
+    return 0;
+  },
+  totalValueProduts: () => {
+    const products = get().products;
+
+    if (products.length) {
+      return products.reduce(
+        (total, product) => total + product.quantity * product.price,
+        0
+      );
     }
 
     return 0;
