@@ -3,6 +3,7 @@ import {
   Alert,
   Keyboard,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   ScrollView,
   StyleSheet,
@@ -19,6 +20,7 @@ import { Button } from "@/components/button";
 import { LinkButton } from "@/components/link-button";
 import { formatToMoneyBR } from "@/utils/functions/maskMoney";
 import { useNavigation } from "expo-router";
+import { messageText, numberWhatsappMock } from "@/utils/texts/offerWhatsapp";
 
 const styles = StyleSheet.create({
   listProducts: {
@@ -40,14 +42,22 @@ export default function Cart() {
     if (!address) {
       refSCroll?.current?.scrollToEnd();
 
+      Alert.alert("Atenção!", "Necessário digitar o endereço");
+
       return;
     }
 
+    Linking.openURL(
+      `https://api.whatsapp.com/send?phone=${numberWhatsappMock}&text=${messageText(
+        products,
+        address,
+        totalValue
+      )}`
+    );
+
     clean();
 
-    Alert.alert("Sucesso!", "Pedido enviado com sucesso!", [
-      { text: "Ok", onPress: navigation.goBack },
-    ]);
+    navigation.goBack();
   };
 
   const handleProductRemove = (product: IProductCartData) => {
