@@ -26,3 +26,19 @@ export function add(
     },
   ];
 }
+
+export function remove(
+  products: IProductCartData[],
+  removeProduct: ProductProps
+): IProductCartData[] {
+  const updatedProducts = products.map((product) =>
+    product.id === removeProduct.id
+      ? {
+          ...product,
+          quantity: product.quantity - 1,
+        }
+      : product
+  );
+
+  return updatedProducts.filter((product) => product.quantity > 0);
+}

@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import {
+  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -10,13 +11,14 @@ import {
   View,
 } from "react-native";
 
-import useCartStore from "@/stores/cart-store";
+import useCartStore, { IProductCartData } from "@/stores/cart-store";
 import { Header } from "@/components/header";
 import { ProductItem } from "@/components/product-item";
 import { Input } from "@/components/input";
 import { Button } from "@/components/button";
 import { LinkButton } from "@/components/link-button";
 import { formatToMoneyBR } from "@/utils/functions/maskMoney";
+import { useNavigation } from "expo-router";
 
 const styles = StyleSheet.create({
   listProducts: {
@@ -26,8 +28,9 @@ const styles = StyleSheet.create({
 
 export default function Cart() {
   const refSCroll = useRef<ScrollView>(null);
+  const navigation = useNavigation();
 
-  const { products, totalValueProduts } = useCartStore();
+  const { products, totalValueProduts, remove, clean } = useCartStore();
 
   const [address, setAddress] = useState("");
 
@@ -36,7 +39,32 @@ export default function Cart() {
   const handleSubmit = () => {
     if (!address) {
       refSCroll?.current?.scrollToEnd();
+
+      return;
     }
+
+    clean();
+
+    Alert.alert("Sucesso!", "Pedido enviado com sucesso!", [
+      { text: "Ok", onPress: navigation.goBack },
+    ]);
+  };
+
+  const handleProductRemove = (product: IProductCartData) => {
+    Alert.alert(
+      "Atenção",
+      `O que deseja realizar com o produto: ${product.title}`,
+      [
+        {
+          text:
+            product.quantity > 1
+              ? "Remover uma quantidade"
+              : "Remover o produto",
+          onPress: () => remove(product),
+        },
+        { text: "Cancelar", onPress: () => {} },
+      ]
+    );
   };
 
   return (
@@ -54,10 +82,14 @@ export default function Cart() {
             contentContainerStyle={styles.listProducts}
           >
             <View className="p-5">
-              {products.length && (
+              {!!products.length && (
                 <View className="border-b border-slate-700">
                   {products.map((product) => (
-                    <ProductItem key={product.id} data={product} />
+                    <ProductItem
+                      key={product.id}
+                      data={product}
+                      onPress={() => handleProductRemove(product)}
+                    />
                   ))}
                 </View>
               )}
@@ -68,7 +100,7 @@ export default function Cart() {
                 </Text>
               )}
 
-              {products.length && (
+              {!!products.length && (
                 <>
                   <View className="flex-row gap-2 items-center mt-5 mb-4">
                     <Text className="text-white text-xl font-subtitle">
