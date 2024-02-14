@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 });
 
 export default function Home() {
-  const refScrollVertical = useRef<SectionList>(null);
+  const refScrollVertical = useRef<SectionList<ProductProps>>(null);
 
   const [categorySelected, setCategorySelected] = useState(CATEGORIES[0]);
 
