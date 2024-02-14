@@ -64,7 +64,7 @@ export default function Product() {
           <Button.Text>Adicionar ao pedido</Button.Text>
         </Button>
 
-        <LinkButton href="/" title="Voltar ao cardápio" />
+        <LinkButton href="/" />
       </View>
     </View>
   );
